@@ -1,0 +1,26 @@
+# Render blueprint. Dashboard: New > Blueprint > point at this repository.
+#
+# The free PostgreSQL plan is time-limited on Render. Check the current terms
+# before you rely on it; for a permanent demo, point DATABASE_URL at Neon or
+# Supabase instead and remove the `databases` block.
+
+databases:
+  - name: database-labs-db
+    databaseName: labs
+    user: lab
+    plan: free
+    region: singapore
+
+services:
+  - type: web
+    name: database-labs-demo
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /healthz
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: database-labs-db
+          property: connectionString

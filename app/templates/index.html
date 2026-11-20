@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A live FastAPI + PostgreSQL index of 26 hands-on database labs."
+    />
+    <title>Database Labs · 26 real databases</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="hero">
+      <nav class="nav" aria-label="Main">
+        <a class="brand" href="/">
+          <img src="/static/brand-logo.svg" alt="" width="34" height="34" />
+          <span>Database Labs</span>
+        </a>
+        <div class="nav-links">
+          <a href="https://github.com/devarent/database-labs">Index repo</a>
+          <a href="https://github.com/devarent">GitHub</a>
+        </div>
+      </nav>
+
+      <div class="hero-copy">
+        <p class="eyebrow">Arya Fatthurahman · Live demo</p>
+        <h1>26 real databases.<br /><span>One running app.</span></h1>
+        <p class="lede">
+          This page is a FastAPI app backed by PostgreSQL 17. Add an engine,
+          filter the list, or delete a row. Every change is a real SQL write,
+          not a mock.
+        </p>
+        <div class="actions">
+          <button id="open-form" class="btn primary" type="button">
+            Add an engine
+          </button>
+          <a class="btn ghost" href="https://github.com/devarent/database-labs">
+            Browse the labs
+          </a>
+        </div>
+
+        <dl class="stats" id="stats" aria-label="Collection statistics">
+          <div><dt>Engines</dt><dd data-stat="total">—</dd></div>
+          <div><dt>Docker</dt><dd data-stat="docker">—</dd></div>
+          <div><dt>Cloud</dt><dd data-stat="cloud">—</dd></div>
+          <div><dt>Categories</dt><dd data-stat="categories">—</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="toolbar" aria-label="Filters">
+        <label class="search">
+          <span class="sr-only">Search engines</span>
+          <input
+            id="search"
+            type="search"
+            placeholder="Search engine or category…"
+            autocomplete="off"
+          />
+        </label>
+
+        <label>
+          <span class="sr-only">Category</span>
+          <select id="category">
+            <option value="">All categories</option>
+          </select>
+        </label>
+
+        <div class="segmented" role="group" aria-label="Runtime">
+          <button type="button" data-runtime="" class="active">All</button>
+          <button type="button" data-runtime="docker">Docker</button>
+          <button type="button" data-runtime="cloud">Cloud</button>
+        </div>
+
+        <p id="result-count" class="result-count" aria-live="polite"></p>
+      </section>
+
+      <section id="grid" class="grid" aria-live="polite" aria-busy="true"></section>
+      <p id="empty" class="empty" hidden>
+        No engines match that filter. Try clearing the search.
+      </p>
+    </main>
+
+    <footer class="footer">
+      <p>
+        FastAPI · PostgreSQL 17 · Docker. Part of
+        <a href="https://github.com/devarent/database-labs">database-labs</a>.
+      </p>
+      <p class="fine">
+        Lab credentials are local development values. Never expose a database
+        port to the internet.
+      </p>
+    </footer>
+
+    <dialog id="engine-dialog" aria-labelledby="dialog-title">
+      <form id="engine-form">
+        <h2 id="dialog-title">Add an engine</h2>
+        <p class="dialog-lede">
+          Inserts a row into the PostgreSQL <code>engines</code> table.
+        </p>
+
+        <label>
+          Name
+          <input name="name" required minlength="2" maxlength="80" />
+        </label>
+
+        <label>
+          Category
+          <input
+            name="category"
+            required
+            minlength="2"
+            maxlength="80"
+            list="category-options"
+          />
+          <datalist id="category-options"></datalist>
+        </label>
+
+        <label>
+          Runtime
+          <select name="runtime">
+            <option value="docker">Docker</option>
+            <option value="cloud">Cloud</option>
+          </select>
+        </label>
+
+        <label>
+          Repository URL
+          <input
+            name="repo_url"
+            type="url"
+            required
+            placeholder="https://github.com/devarent/redis-lab"
+          />
+        </label>
+
+        <label>
+          Notes
+          <textarea name="notes" rows="3" maxlength="500"></textarea>
+        </label>
+
+        <p id="form-error" class="form-error" role="alert" hidden></p>
+
+        <div class="dialog-actions">
+          <button type="button" id="cancel" class="btn ghost">Cancel</button>
+          <button type="submit" class="btn primary">Save engine</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

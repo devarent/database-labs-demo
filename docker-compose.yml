@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:17
+    container_name: database-labs-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-labpassword}
+      POSTGRES_DB: labs
+    ports:
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lab -d labs"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    container_name: database-labs-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://lab:${POSTGRES_PASSWORD:-labpassword}@db:5432/labs
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=2)",
+        ]
+      interval: 30s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+
+volumes:
+  pgdata:
