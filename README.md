@@ -172,6 +172,7 @@ database-labs-demo/
 │   ├── static/          # CSS, JS, logo, favicon
 │   └── templates/       # Jinja2 UI
 ├── tests/test_app.py
+├── pytest.ini
 ├── .github/workflows/ci.yml
 ├── docker-compose.yml
 ├── Dockerfile
